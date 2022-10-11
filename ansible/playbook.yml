@@ -1,0 +1,7 @@
+---
+- name: VPN | Install and Configure
+  hosts: all
+  become: true
+
+  roles:
+    - { role: vlan, when: ansible_system == 'Linux' }
