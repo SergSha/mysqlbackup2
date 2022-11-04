@@ -197,10 +197,187 @@ enforce-gtid-consistency = On
 
 <p>Запускаем сервис mysql:</p>
 
-<pre></pre>
+<pre>[root@master ~]# systemctl start mysql
+[root@master ~]# systemctl status mysql
+● mysqld.service - MySQL Server
+   Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)
+   Active: active (running) since Fri 2022-11-04 11:30:39 UTC; 8s ago
+     Docs: man:mysqld(8)
+           http://dev.mysql.com/doc/refman/en/using-systemd.html
+  Process: 24655 ExecStart=/usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/mysqld.pid $MYSQLD_OPTS (code=exited, status=0/SUCCESS)
+  Process: 24597 ExecStartPre=/usr/bin/mysqld_pre_systemd (code=exited, status=0/SUCCESS)
+ Main PID: 24657 (mysqld)
+   CGroup: /system.slice/mysqld.service
+           └─24657 /usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/my...
 
+Nov 04 11:30:35 master systemd[1]: Starting MySQL Server...
+Nov 04 11:30:39 master systemd[1]: Started MySQL Server.
+[root@master ~]#</pre>
 
+<p>Находим пароль для пользователя root:</p>
 
+<pre>[root@master ~]# cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'
+<b>A+0!Id>(VS#M</b>
+[root@master ~]#</pre>
+
+<p>Подключаемся к mysql:</p>
+
+<pre>[root@master ~]# mysql -uroot -p'A+0!Id>(VS#M'
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 2
+Server version: 5.7.39-42-log
+
+Copyright (c) 2009-2022 Percona LLC and/or its affiliates
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql></pre>
+
+<p> и меняем пароль для доступа к полному функционалу:</p>
+
+<pre>mysql> ALTER USER USER() IDENTIFIED BY 'root@Otus1234';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql></pre>
+
+<p>Репликацию будем настраивать с использованием GTID.</p>
+
+<p>Смотрим атрибут server_id:</p>
+
+<pre>mysql> SELECT @@server_id;
++-------------+
+| @@server_id |
++-------------+
+|           1 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql></pre>
+
+<p>Убеждаемся что GTID включен:</p>
+
+<pre>mysql> SHOW VARIABLES LIKE 'gtid_mode';
++---------------+-------+
+| Variable_name | Value |
++---------------+-------+
+| gtid_mode     | ON    |
++---------------+-------+
+1 row in set (0.00 sec)
+
+mysql></pre>
+
+<p>Создадим тестовую базу bet:</p>
+
+<pre>mysql> CREATE DATABASE bet;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> exit;
+Bye
+[root@master ~]#</pre>
+
+<p>Загрузим в нее дамп:</p>
+
+<pre>[root@master ~]# mysql -uroot -p -D bet < /vagrant/bet.dmp 
+Enter password: 
+[root@master ~]#</pre>
+
+<p>Проверим, что загрузилась база данных bet:</p>
+
+<pre>[root@master ~]# mysql -uroot -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 3
+Server version: 5.7.39-42-log Percona Server (GPL), Release 42, Revision b0a7dc2da2e
+
+Copyright (c) 2009-2022 Percona LLC and/or its affiliates
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> <b>USE bet;</b>
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> <b>SHOW TABLES;</b>
++------------------+
+| Tables_in_bet    |
++------------------+
+| bookmaker        |
+| competition      |
+| events_on_demand |
+| market           |
+| odds             |
+| outcome          |
+| v_same_event     |
++------------------+
+7 rows in set (0.00 sec)
+
+mysql></pre>
+
+<p>Создадим пользователя repl для репликации:</p>
+
+<pre>mysql> CREATE USER 'repl'@'%' IDENTIFIED BY 'repl@Otus1234';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> SELECT user,host FROM mysql.user where user='repl';
++------+------+
+| user | host |
++------+------+
+| repl | %    |
++------+------+
+1 row in set (0.00 sec)
+
+mysql></pre>
+
+<p>Даём ему права на эту самую репликацию:</p>
+
+<pre>mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%' IDENTIFIED BY 'repl@Otus1234';
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> exit;
+Bye
+[root@master ~]#</pre>
+
+<p>Дампим базу для последующего залива на слэйв и игнорируем таблицы по заданию:</p>
+
+<pre>[root@master ~]# mysqldump --all-databases --triggers --routines --master-data --ignore-table=bet.events_on_demand --ignore-table=bet.v_same_event -uroot -p > /vagrant/master.sql
+Enter password: 
+Warning: A partial dump from a server that has GTIDs will by default include the GTIDs of all transactions, even those that changed suppressed parts of the database. If you don't want to restore GTIDs, pass --set-gtid-purged=OFF. To make a complete dump, pass --all-databases --triggers --routines --events. 
+[root@master ~]# logout
+[vagrant@master ~]$ logout
+Connection to 127.0.0.1 closed.
+[user@localhost mysqlbackup2]$</pre>
+
+<p>Настройка сервера master завершена. Файл дампа будем заливать на сервер replica.</p>
+
+<p>Извлечём файл дампа master.sql с сервера master:</p>
+
+<pre>[user@localhost mysqlbackup2]$ scp -i ./.vagrant/machines/master/virtualbox/private_key vagrant@192.168.50.10:/vagrant/master.sql .
+master.sql                                    100%  974KB  67.5MB/s   00:00
+[user@localhost mysqlbackup2]$</pre>
+
+<p>Отправим файл дампа master.sql на сервер replica:</p>
+
+<pre>[user@localhost mysqlbackup2]$ scp -i ./.vagrant/machines/replica/virtualbox/private_key ./master.sql vagrant@192.168.50.11:/vagrant/
+master.sql                                    100%  974KB  58.3MB/s   00:00
+[user@localhost mysqlbackup2]$</pre>
+
+<p>В отдельном окне теримнала подключаемся по ssh к серверу replica и зайдём с правами root:</p>
+
+<pre>[user@localhost mysqlbackup2]$ vagrant ssh replica
+[vagrant@replica ~]$ sudo -i
+[root@replica ~]#</pre>
 
 
 
