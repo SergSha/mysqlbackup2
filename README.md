@@ -6,11 +6,11 @@
 
 <p>В материалах приложены ссылки на вагрант для репликации и дамп базы bet.dmp<br />
 Базу развернуть на мастере и настроить так, чтобы реплицировались таблицы:<br />
-| bookmaker&nbsp;&nbsp;&nbsp;|<br />
-| competition&nbsp;&nbsp;|<br />
-| market&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br />
-| odds&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br />
-| outcome&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</p>
+| bookmaker&nbsp;&nbsp; |<br />
+| competition&nbsp; |<br />
+| market&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br />
+| odds&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br />
+| outcome&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</p>
 
 <p>В материалах приложены ссылки на вагрант для репликации и дамп базы bet.dmp<br />
 Базу развернуть на мастере и настроить так, чтобы реплицировались таблицы:<br />
