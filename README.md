@@ -147,7 +147,7 @@ datadir=/var/lib/mysql
 socket=/var/lib/mysql/mysql.sock
 symbolic-links=0
 
-server-id = 1
+<b>server-id = 1</b>
 innodb_file_per_table = 1
 skip-name-resolve</pre>
 
