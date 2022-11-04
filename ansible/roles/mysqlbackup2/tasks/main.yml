@@ -1,2 +1,35 @@
 ---
 # tasks file for mysqlbackup2
+
+- name: Install Percona repo
+  command: yum install https://repo.percona.com/yum/percona-release-latest.noarch.rpm -y 
+
+- name: Install Percona-Server-server-57
+  yum:
+    name: Percona-Server-server-57
+    state: latest
+
+- name: Copy config files
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/my.cnf.d/{{ item }}"
+  loop:
+  - 01-base.cnf
+  - 02-max-connections.cnf
+  - 03-performance.cnf
+  - 04-slow-query.cnf
+  - 05-binlog.cnf
+
+- name: Start MySQL service
+  service:
+    name: mysql
+    state: retarted
+
+- name: Include master server tasks
+  include_tasks: master.yml
+  when: '"master" in ansible_hostname'
+
+- name: Include replica server tasks
+  include_tasks: replica.yml
+  when: '"replica" in ansible_hostname'
+

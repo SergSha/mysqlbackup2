@@ -1,0 +1,8 @@
+---
+# tasks file for mysqlbackup2
+
+- name: Get temporary root password
+  shell: cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'
+  register: temprootpassword
+
+
