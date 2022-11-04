@@ -12,6 +12,16 @@
 | odds&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<br />
 | outcome&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</p>
 
+<p>В материалах приложены ссылки на вагрант для репликации и дамп базы bet.dmp<br />
+Базу развернуть на мастере и настроить так, чтобы реплицировались таблицы:<br />
+| bookmaker&ensp;&ensp; |<br />
+| competition |<br />
+| market&ensp;&ensp;&ensp;&ensp;&ensp; |<br />
+| odds&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; |<br />
+| outcome&ensp;&ensp;&ensp;&ensp; |</p>
+
+
+
 <ul style="disc">
 <li>Настроить GTID репликацию<br />
 x<br />
