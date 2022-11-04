@@ -26,7 +26,7 @@ x<br />
 
 <p>Содержимое Vagrantfile:</p>
 
-<pre>[user@localhost mysqlbackup2]$ vi ./Vagrantfile</pre>
+<pre>[user@localhost mysqlbackup2]$ <b>vi ./Vagrantfile</b></pre>
 
 <pre># -*- mode: ruby -*-
 # vi: set ft=ruby :
@@ -70,9 +70,9 @@ end</pre>
 
 <p>Запустим виртуальные машины:</p>
 
-<pre>[user@localhost mysqlbackup2]$ vagrant up</pre>
+<pre>[user@localhost mysqlbackup2]$ <b>vagrant up</b></pre>
 
-<pre>[user@localhost mysqlbackup2]$ vagrant status
+<pre>[user@localhost mysqlbackup2]$ <b>vagrant status</b>
 Current machine states:
 
 master                    running (virtualbox)
@@ -87,13 +87,13 @@ VM, run `vagrant status NAME`.
 
 <p>Подключаемся по ssh к серверу master и зайдём с правами root:</p>
 
-<pre>[user@localhost mysqlbackup2]$ vagrant ssh master
-[vagrant@master ~]$ sudo -i
+<pre>[user@localhost mysqlbackup2]$ <b>vagrant ssh master</b>
+[vagrant@master ~]$ <b>sudo -i</b>
 [root@master ~]#</pre>
 
 <p>Подключаем Percona репозиторий последней версии:</p>
 
-<pre>[root@master ~]# yum install https://repo.percona.com/yum/percona-release-latest.noarch.rpm -y
+<pre>[root@master ~]# <b>yum install https://repo.percona.com/yum/percona-release-latest.noarch.rpm -y</b>
 ...
 Installed:
   percona-release.noarch 0:1.0-27
@@ -101,7 +101,7 @@ Installed:
 Complete!
 [root@master ~]#</pre>
 
-<pre>[root@master ~]# ls -l /etc/yum.repos.d/
+<pre>[root@master ~]# <b>ls -l /etc/yum.repos.d/</b>
 total 44
 -rw-r--r--. 1 root root 1664 Apr  7  2020 CentOS-Base.repo
 -rw-r--r--. 1 root root 1309 Apr  7  2020 CentOS-CR.repo
@@ -117,7 +117,7 @@ total 44
 
 <p>Список доступных для установки пакетов Percona-Server:</p>
 
-<pre>[root@master ~]# yum list | grep -i percona-server-server
+<pre>[root@master ~]# <b>yum list | grep -i percona-server-server</b>
 Failed to set locale, defaulting to C
 Percona-Server-server-55.x86_64             5.5.62-rel38.14.el7        percona-release-x86_64
 Percona-Server-server-56.x86_64             5.6.51-rel91.0.1.el7       percona-release-x86_64
@@ -126,11 +126,11 @@ Percona-Server-server-57.x86_64             5.7.39-42.1.el7            percona-r
 
 <p>Установим пакет Percona-Server-server-57:</p>
 
-<pre>[root@master ~]# yum install Percona-Server-server-57 -y</pre>
+<pre>[root@master ~]# <b>yum install Percona-Server-server-57 -y</b></pre>
 
 <p>Закидываем конфиги в директорий /etc/my.cnf.d/:</p>
 
-<pre>[root@master ~]# ls -l /etc/my.cnf.d/
+<pre>[root@master ~]# <b>ls -l /etc/my.cnf.d/</b>
 total 20
 -rw-r--r--. 1 root root 207 Nov  4 10:03 01-base.cnf
 -rw-r--r--. 1 root root  48 Nov  4 10:03 02-max-connections.cnf
@@ -139,7 +139,7 @@ total 20
 -rw-r--r--. 1 root root 385 Nov  4 10:03 05-binlog.cnf
 [root@master ~]#</pre>
 
-<pre>[root@master ~]# vi /etc/my.cnf.d/01-base.cnf
+<pre>[root@master ~]# <b>vi /etc/my.cnf.d/01-base.cnf</b>
 [mysqld]
 pid-file=/var/run/mysqld/mysqld.pid
 log-error=/var/log/mysqld.log
@@ -151,12 +151,12 @@ server-id = 1
 innodb_file_per_table = 1
 skip-name-resolve</pre>
 
-<pre>[root@master ~]# vi /etc/my.cnf.d/02-max-connections.cnf
+<pre>[root@master ~]# <b>vi /etc/my.cnf.d/02-max-connections.cnf</b>
 [mysqld]
 wait-timeout = 60
 max-connections = 500</pre>
 
-<pre>[root@master ~]# vi /etc/my.cnf.d/03-performance.cnf
+<pre>[root@master ~]# <b>vi /etc/my.cnf.d/03-performance.cnf</b>
 [mysqld]
 skip-external-locking
 key-buffer-size = 384M
@@ -174,13 +174,13 @@ tmp-table-size = 1024M
 max-heap-table-size = 1024M
 #thread-concurrency = 8 # Из за этого параметра на Vagrant-овской виртуалке mysql не взлетает</pre>
 
-<pre>[root@master ~]# vi /etc/my.cnf.d/04-slow-query.cnf
+<pre>[root@master ~]# <b>vi /etc/my.cnf.d/04-slow-query.cnf</b>
 [mysqld]
 slow-query-log = 1
 log-output = TABLE
 long-query-time = 2</pre>
 
-<pre>[root@master ~]# vi /etc/my.cnf.d/05-binlog.cnf
+<pre>[root@master ~]# <b>vi /etc/my.cnf.d/05-binlog.cnf</b>
 [mysqld]
 log-bin = mysql-bin
 expire-logs-days = 7
@@ -198,7 +198,7 @@ enforce-gtid-consistency = On
 
 <p>Запускаем сервис mysql:</p>
 
-<pre>[root@master ~]# systemctl start mysql
+<pre>[root@master ~]# <b>systemctl start mysql</b>
 [root@master ~]# systemctl status mysql
 ● mysqld.service - MySQL Server
    Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)
@@ -217,13 +217,13 @@ Nov 04 11:30:39 master systemd[1]: Started MySQL Server.
 
 <p>Находим пароль для пользователя root:</p>
 
-<pre>[root@master ~]# cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'
-<b>A+0!Id>(VS#M</b>
+<pre>[root@master ~]# <b>cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'</b>
+A+0!Id>(VS#M
 [root@master ~]#</pre>
 
 <p>Подключаемся к mysql:</p>
 
-<pre>[root@master ~]# mysql -uroot -p'A+0!Id>(VS#M'
+<pre>[root@master ~]# <b>mysql -uroot -p'A+0!Id>(VS#M'</b>
 mysql: [Warning] Using a password on the command line interface can be insecure.
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 2
@@ -242,7 +242,7 @@ mysql></pre>
 
 <p> и меняем пароль для доступа к полному функционалу:</p>
 
-<pre>mysql> ALTER USER USER() IDENTIFIED BY 'root@Otus1234';
+<pre>mysql> <b>ALTER USER USER() IDENTIFIED BY 'root@Otus1234';</b>
 Query OK, 0 rows affected (0.00 sec)
 
 mysql></pre>
@@ -251,11 +251,11 @@ mysql></pre>
 
 <p>Смотрим атрибут server_id:</p>
 
-<pre>mysql> SELECT @@server_id;
+<pre>mysql> <b>SELECT @@server_id;</b>
 +-------------+
 | @@server_id |
 +-------------+
-|           1 |
+|           <b>1</b> |
 +-------------+
 1 row in set (0.00 sec)
 
@@ -263,11 +263,11 @@ mysql></pre>
 
 <p>Убеждаемся что GTID включен:</p>
 
-<pre>mysql> SHOW VARIABLES LIKE 'gtid_mode';
+<pre>mysql> <b>SHOW VARIABLES LIKE 'gtid_mode';</b>
 +---------------+-------+
 | Variable_name | Value |
 +---------------+-------+
-| gtid_mode     | ON    |
+| gtid_mode     | <b>ON</b>    |
 +---------------+-------+
 1 row in set (0.00 sec)
 
@@ -275,7 +275,7 @@ mysql></pre>
 
 <p>Создадим тестовую базу bet:</p>
 
-<pre>mysql> CREATE DATABASE bet;
+<pre>mysql> <b>CREATE DATABASE bet;</b>
 Query OK, 1 row affected (0.00 sec)
 
 mysql> exit;
@@ -284,13 +284,13 @@ Bye
 
 <p>Загрузим в нее дамп:</p>
 
-<pre>[root@master ~]# mysql -uroot -p -D bet < /vagrant/bet.dmp 
+<pre>[root@master ~]# <b>mysql -uroot -p -D bet < /vagrant/bet.dmp </b>
 Enter password: 
 [root@master ~]#</pre>
 
 <p>Проверим, что загрузилась база данных bet:</p>
 
-<pre>[root@master ~]# mysql -uroot -p
+<pre>[root@master ~]# <b>mysql -uroot -p</b>
 Enter password: 
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 3
@@ -328,7 +328,7 @@ mysql></pre>
 
 <p>Создадим пользователя repl для репликации:</p>
 
-<pre>mysql> CREATE USER 'repl'@'%' IDENTIFIED BY 'repl@Otus1234';
+<pre>mysql> <b>CREATE USER 'repl'@'%' IDENTIFIED BY 'repl@Otus1234';</b>
 Query OK, 0 rows affected (0.01 sec)
 
 mysql> SELECT user,host FROM mysql.user where user='repl';
@@ -343,7 +343,7 @@ mysql></pre>
 
 <p>Даём ему права на эту самую репликацию:</p>
 
-<pre>mysql> GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%' IDENTIFIED BY 'repl@Otus1234';
+<pre>mysql> <b>GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%' IDENTIFIED BY 'repl@Otus1234';</b>
 Query OK, 0 rows affected, 1 warning (0.00 sec)
 
 mysql> exit;
@@ -352,7 +352,7 @@ Bye
 
 <p>Дампим базу для последующего залива на слэйв и игнорируем таблицы по заданию:</p>
 
-<pre>[root@master ~]# mysqldump --all-databases --triggers --routines --master-data --ignore-table=bet.events_on_demand --ignore-table=bet.v_same_event -uroot -p > /vagrant/master.sql
+<pre>[root@master ~]# <b>mysqldump --all-databases --triggers --routines --master-data --ignore-table=bet.events_on_demand --ignore-table=bet.v_same_event -uroot -p > /vagrant/master.sql</b>
 Enter password: 
 Warning: A partial dump from a server that has GTIDs will by default include the GTIDs of all transactions, even those that changed suppressed parts of the database. If you don't want to restore GTIDs, pass --set-gtid-purged=OFF. To make a complete dump, pass --all-databases --triggers --routines --events. 
 [root@master ~]# logout
@@ -374,19 +374,19 @@ master.sql                                    100%  974KB  67.5MB/s   00:00
 master.sql                                    100%  974KB  58.3MB/s   00:00
 [user@localhost mysqlbackup2]$</pre>
 
+<h4>Сервер replica</h4>
+
 <p>В отдельном окне теримнала подключаемся по ssh к серверу replica и зайдём с правами root:</p>
 
-<pre>[user@localhost mysqlbackup2]$ vagrant ssh replica
-[vagrant@replica ~]$ sudo -i
+<pre>[user@localhost mysqlbackup2]$ <b>vagrant ssh replica</b>
+[vagrant@replica ~]$ <b>sudo -i</b>
 [root@replica ~]#</pre>
-
-<h4>Сервер replica</h4>
 
 <p>Аналогично серверу master устанавливаем и настраиваем необходимые пакеты и конфиги.</p>
 
 <p>Подключаем Percona репозиторий последней версии:</p>
 
-<pre>[root@replica ~]# yum install https://repo.percona.com/yum/percona-release-latest.noarch.rpm -y
+<pre>[root@replica ~]# <b>yum install https://repo.percona.com/yum/percona-release-latest.noarch.rpm -y</b>
 ...
 Installed:
   percona-release.noarch 0:1.0-27
@@ -396,11 +396,11 @@ Complete!
 
 <p>Установим пакет Percona-Server-server-57:</p>
 
-<pre>[root@replica ~]# yum install Percona-Server-server-57 -y</pre>
+<pre>[root@replica ~]# <b>yum install Percona-Server-server-57 -y</b></pre>
 
 <p>Закидываем конфиги в директорий /etc/my.cnf.d/:</p>
 
-<pre>[root@replica ~]# ls -l /etc/my.cnf.d/
+<pre>[root@replica ~]# <b>ls -l /etc/my.cnf.d/</b>
 total 20
 -rw-r--r--. 1 root root 207 Nov  4 10:03 01-base.cnf
 -rw-r--r--. 1 root root  48 Nov  4 10:03 02-max-connections.cnf
@@ -411,7 +411,7 @@ total 20
 
 <p>На сервере replica атрибут server_id должен отличаться от server_id на сервере master, в данном случае, присвоим значение 2:</p>
 
-<pre>[root@replica ~]# vi /etc/my.cnf.d/01-base.cnf
+<pre>[root@replica ~]# <b>vi /etc/my.cnf.d/01-base.cnf</b>
 [mysqld]
 pid-file=/var/run/mysqld/mysqld.pid
 log-error=/var/log/mysqld.log
@@ -423,12 +423,12 @@ symbolic-links=0
 innodb_file_per_table = 1
 skip-name-resolve</pre>
 
-<pre>[root@replica ~]# vi /etc/my.cnf.d/02-max-connections.cnf
+<pre>[root@replica ~]# <b>vi /etc/my.cnf.d/02-max-connections.cnf</b>
 [mysqld]
 wait-timeout = 60
 max-connections = 500</pre>
 
-<pre>[root@replica ~]# vi /etc/my.cnf.d/03-performance.cnf
+<pre>[root@replica ~]# <b>vi /etc/my.cnf.d/03-performance.cnf</b>
 [mysqld]
 skip-external-locking
 key-buffer-size = 384M
@@ -446,7 +446,7 @@ tmp-table-size = 1024M
 max-heap-table-size = 1024M
 #thread-concurrency = 8 # Из за этого параметра на Vagrant-овской виртуалке mysql не взлетает</pre>
 
-<pre>[root@replica ~]# vi /etc/my.cnf.d/04-slow-query.cnf
+<pre>[root@replica ~]# <b>vi /etc/my.cnf.d/04-slow-query.cnf</b>
 [mysqld]
 slow-query-log = 1
 log-output = TABLE
@@ -454,7 +454,7 @@ long-query-time = 2</pre>
 
 <p>Раскомментируем в /etc/my.cnf.d/05-binlog.cnf последние две строки, таким образом указываем таблицы, которые будут игнорироваться при репликации:</p>
 
-<pre>[root@replica ~]# vi /etc/my.cnf.d/05-binlog.cnf
+<pre>[root@replica ~]# <b>vi /etc/my.cnf.d/05-binlog.cnf</b>
 [mysqld]
 log-bin = mysql-bin
 expire-logs-days = 7
@@ -472,18 +472,18 @@ replicate-ignore-table=bet.v_same_event</b></pre>
 
 <p>Запускаем сервис mysql:</p>
 
-<pre>[root@replica ~]# systemctl start mysql
+<pre>[root@replica ~]# <b>systemctl start mysql</b>
 [root@replica ~]#</pre>
 
 <p>Находим пароль для пользователя root:</p>
 
-<pre>[root@replica ~]# cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'
-<b>-tg6%oDu;-O(</b>
+<pre>[root@replica ~]# <b>cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'</b>
+-tg6%oDu;-O(
 [root@replica ~]#</pre>
 
 <p>Подключаемся к mysql:</p>
 
-<pre>[root@replica ~]# mysql -uroot -p'-tg6%oDu;-O('
+<pre>[root@replica ~]# <b>mysql -uroot -p'-tg6%oDu;-O('</b>
 mysql: [Warning] Using a password on the command line interface can be insecure.
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 2
@@ -502,18 +502,18 @@ mysql></pre>
 
 <p> и меняем пароль для доступа к полному функционалу:</p>
 
-<pre>mysql> ALTER USER USER() IDENTIFIED BY 'root@Otus1234';
+<pre>mysql> <b>ALTER USER USER() IDENTIFIED BY 'root@Otus1234';</b>
 Query OK, 0 rows affected (0.00 sec)
 
 mysql></pre>
 
 <p>Смотрим атрибут server_id:</p>
 
-<pre>mysql> SELECT @@server_id;
+<pre>mysql> <b>SELECT @@server_id;</b>
 +-------------+
 | @@server_id |
 +-------------+
-|           2 |
+|           <b>2</b> |
 +-------------+
 1 row in set (0.00 sec)
 
@@ -521,11 +521,11 @@ mysql></pre>
 
 <p>Заливаем дамп master.sql:</p>
 
-<pre>mysql> SOURCE /vagrant/master.sql;</pre>
+<pre>mysql> <b>SOURCE /vagrant/master.sql;</b></pre>
 
 <p>Убеждаемся что база есть:</p>
 
-<pre>mysql> SHOW DATABASES LIKE 'bet';
+<pre>mysql> <b>SHOW DATABASES LIKE 'bet';</b>
 +----------------+
 | Database (bet) |
 +----------------+
@@ -537,7 +537,7 @@ mysql></pre>
 
 <p>и она без лишних таблиц:</p>
 
-<pre>mysql> SHOW TABLES;
+<pre>mysql> <b>SHOW TABLES;</b>
 +---------------+
 | Tables_in_bet |
 +---------------+
@@ -555,14 +555,14 @@ mysql></pre>
 
 <p>Теперь подключаем к master:</p>
 
-<pre>mysql> CHANGE MASTER TO MASTER_HOST="192.168.50.10",MASTER_PORT=3306,MASTER_USER="repl",MASTER_PASSWORD="repl@Otus1234",MASTER_AUTO_POSITION=1;
+<pre>mysql> <b>CHANGE MASTER TO MASTER_HOST="192.168.50.10",MASTER_PORT=3306,MASTER_USER="repl",MASTER_PASSWORD="repl@Otus1234",MASTER_AUTO_POSITION=1;</b>
 Query OK, 0 rows affected, 2 warnings (0.01 sec)
 
 mysql></pre>
 
 <p>и запускаем slave:</p>
 
-<pre>mysql> START SLAVE;
+<pre>mysql> <b>START SLAVE;</b>
 Query OK, 0 rows affected (0.00 sec)
 
 mysql></pre>
@@ -635,14 +635,14 @@ mysql></pre>
 <p>Проверим репликацию в действии. <br />
 На сервере master:</p>
 
-<pre>mysql> USE bet;
+<pre>mysql> <b>USE bet;</b>
 Reading table information for completion of table and column names
 You can turn off this feature to get a quicker startup with -A
 
 Database changed
 mysql></pre>
 
-<pre>mysql> SELECT * FROM bookmaker;
+<pre>mysql> <b>SELECT * FROM bookmaker;</b>
 +----+----------------+
 | id | bookmaker_name |
 +----+----------------+
@@ -657,14 +657,14 @@ mysql></pre>
 
 <p>В таблицу bookmaker внесём запись:</p>
 
-<pre>mysql> INSERT INTO bookmaker (id,bookmaker_name) VALUES(1,'1xbet');
+<pre>mysql> <b>INSERT INTO bookmaker (id,bookmaker_name) VALUES(1,'1xbet');</b>
 Query OK, 1 row affected (0.00 sec)
 
 mysql></pre>
 
 <p>Убедимся, что в таблице bookmaker появилась новая запись:</p>
 
-<pre>mysql> SELECT * FROM bookmaker;
+<pre>mysql> <b>SELECT * FROM bookmaker;</b>
 +----+----------------+
 | id | bookmaker_name |
 +----+----------------+
@@ -680,9 +680,9 @@ mysql></pre>
 
 <p>Проверяем, внеслись ли изменения на сервере replica:</p>
 
-<pre>mysql> USE bet;
+<pre>mysql> <b>USE bet;</b>
 Database changed
-mysql> SELECT * FROM bookmaker;
+mysql> <b>SELECT * FROM bookmaker;</b>
 +----+----------------+
 | id | bookmaker_name |
 +----+----------------+
@@ -699,7 +699,7 @@ mysql></pre>
 <p>Как мы наблюдаем, что изменения внеслись на сервере replica. <br />
 В бинлогах мы также можем увидеть записи об изменениях:</p>
 
-<pre>[root@replica ~]# mysqlbinlog /var/lib/mysql/mysql-bin.000001 
+<pre>[root@replica ~]# <b>mysqlbinlog /var/lib/mysql/mysql-bin.000001</b>
 /*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=1*/;
 /*!50003 SET @OLD_COMPLETION_TYPE=@@COMPLETION_TYPE,COMPLETION_TYPE=0*/;
 DELIMITER /*!*/;
@@ -722,7 +722,7 @@ DELIMITER ;
 /*!50003 SET COMPLETION_TYPE=@OLD_COMPLETION_TYPE*/;
 /*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/;</pre>
 
-<pre>[root@replica ~]# mysqlbinlog /var/lib/mysql/mysql-bin.000002 
+<pre>[root@replica ~]# <b>mysqlbinlog /var/lib/mysql/mysql-bin.000002</b>
 /*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=1*/;
 /*!50003 SET @OLD_COMPLETION_TYPE=@@COMPLETION_TYPE,COMPLETION_TYPE=0*/;
 DELIMITER /*!*/;
