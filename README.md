@@ -770,4 +770,17 @@ DELIMITER ;
 /*!50530 SET @@SESSION.PSEUDO_SLAVE_MODE=0*/;
 [root@replica ~]#</pre>
 
+<h4>Запуск стенда "MySQL Replication"</h4>
+
+<p>Запустить стенд с помощью следующей команды:</p>
+
+<pre>$ git clone https://github.com/SergSha/mysqlreplica.git && cd ./mysqlreplica/ && vagrant up</pre>
+
+<p>После завершения можно подключиться с помощью ssh либо на главный сервер master:</p>
+
+<pre>$ vagrant ssh master</pre>
+
+<p>либо на сервер репликации replica:</p>
+
+<pre>$ vagrant ssh replica</pre>
 
