@@ -26,7 +26,7 @@ x<br />
 
 <p>Содержимое Vagrantfile:</p>
 
-<pre>[user@localhost mysqlbackup2]$ <b>vi ./Vagrantfile</b></pre>
+<pre>[user@localhost mysqlreplica]$ <b>vi ./Vagrantfile</b></pre>
 
 <pre># -*- mode: ruby -*-
 # vi: set ft=ruby :
@@ -70,9 +70,9 @@ end</pre>
 
 <p>Запустим виртуальные машины:</p>
 
-<pre>[user@localhost mysqlbackup2]$ <b>vagrant up</b></pre>
+<pre>[user@localhost mysqlreplica]$ <b>vagrant up</b></pre>
 
-<pre>[user@localhost mysqlbackup2]$ <b>vagrant status</b>
+<pre>[user@localhost mysqlreplica]$ <b>vagrant status</b>
 Current machine states:
 
 master                    running (virtualbox)
@@ -81,13 +81,13 @@ replica                   running (virtualbox)
 This environment represents multiple VMs. The VMs are all listed
 above with their current state. For more information about a specific
 VM, run `vagrant status NAME`.
-[user@localhost mysqlbackup2]$</pre>
+[user@localhost mysqlreplica]$</pre>
 
 <h4>Сервер master</h4>
 
 <p>Подключаемся по ssh к серверу master и зайдём с правами root:</p>
 
-<pre>[user@localhost mysqlbackup2]$ <b>vagrant ssh master</b>
+<pre>[user@localhost mysqlreplica]$ <b>vagrant ssh master</b>
 [vagrant@master ~]$ <b>sudo -i</b>
 [root@master ~]#</pre>
 
@@ -358,27 +358,27 @@ Warning: A partial dump from a server that has GTIDs will by default include the
 [root@master ~]# logout
 [vagrant@master ~]$ logout
 Connection to 127.0.0.1 closed.
-[user@localhost mysqlbackup2]$</pre>
+[user@localhost mysqlreplica]$</pre>
 
 <p>Настройка сервера master завершена. Файл дампа будем заливать на сервер replica.</p>
 
 <p>Извлечём файл дампа master.sql с сервера master:</p>
 
-<pre>[user@localhost mysqlbackup2]$ scp -i ./.vagrant/machines/master/virtualbox/private_key vagrant@192.168.50.10:/vagrant/master.sql .
+<pre>[user@localhost mysqlreplica]$ scp -i ./.vagrant/machines/master/virtualbox/private_key vagrant@192.168.50.10:/vagrant/master.sql .
 master.sql                                    100%  974KB  67.5MB/s   00:00
-[user@localhost mysqlbackup2]$</pre>
+[user@localhost mysqlreplica]$</pre>
 
 <p>Отправим файл дампа master.sql на сервер replica:</p>
 
-<pre>[user@localhost mysqlbackup2]$ scp -i ./.vagrant/machines/replica/virtualbox/private_key ./master.sql vagrant@192.168.50.11:/vagrant/
+<pre>[user@localhost mysqlreplica]$ scp -i ./.vagrant/machines/replica/virtualbox/private_key ./master.sql vagrant@192.168.50.11:/vagrant/
 master.sql                                    100%  974KB  58.3MB/s   00:00
-[user@localhost mysqlbackup2]$</pre>
+[user@localhost mysqlreplica]$</pre>
 
 <h4>Сервер replica</h4>
 
 <p>В отдельном окне теримнала подключаемся по ssh к серверу replica и зайдём с правами root:</p>
 
-<pre>[user@localhost mysqlbackup2]$ <b>vagrant ssh replica</b>
+<pre>[user@localhost mysqlreplica]$ <b>vagrant ssh replica</b>
 [vagrant@replica ~]$ <b>sudo -i</b>
 [root@replica ~]#</pre>
 
