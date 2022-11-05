@@ -1,34 +1,34 @@
 ---
 # tasks file for mysqlreplica
 
-- name: Get temporary mysql root password
+- name: master | Get temporary mysql root password
   shell: cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'
   register: temp_mysql_root_password
 
-- name: Update mysql root password
+- name: master | Update mysql root password
   command: mysql -uroot -p'{{ temp_mysql_root_password.stdout }}' --connect-expired-password -e "ALTER USER USER() IDENTIFIED BY '{{ mysql_root_password }}';"
 
-- name: Create test database 'bet'
+- name: master | Create test database 'bet'
   command: mysql -e "CREATE DATABASE bet;"
 
-- name: Copy mysql dump 'bet' to /vagrant/
+- name: master | Copy mysql dump 'bet' to /vagrant/
   copy:
     src: bet.dmp
     dest: /vagrant/
 
-- name: Import mysql dump 'bet'
+- name: master | Import mysql dump 'bet'
   shell: mysql -D bet < /vagrant/bet.dmp
 
-- name: Create mysql user '{{ mysql_user }}' for replication
+- name: master | Create mysql user '{{ mysql_user }}' for replication
   command: mysql -e "CREATE USER '{{ mysql_user }}'@'%' IDENTIFIED BY '{{ mysql_user_password }}';"
 
-- name: Grant replication slave for mysql user '{{ mysql_user }}'
+- name: master | Grant replication slave for mysql user '{{ mysql_user }}'
   command: mysql -e "GRANT REPLICATION SLAVE ON *.* TO '{{ mysql_user }}'@'%' IDENTIFIED BY '{{ mysql_user_password }}';"
 
-- name: Export mysql dump 'master.sql' for replica server
+- name: master | Export mysql dump 'master.sql' for replica server
   shell: mysqldump --all-databases --triggers --routines --master-data --ignore-table=bet.events_on_demand --ignore-table=bet.v_same_event > /vagrant/master.sql
 
-- name: Fetch mysql dump 'master.sql' to /tmp/fetched for replica server
+- name: master | Fetch mysql dump 'master.sql' to /tmp/fetched for replica server
   fetch:
     src: "/vagrant/{{ item }}"
     dest: /tmp/fetched
