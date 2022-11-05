@@ -24,16 +24,16 @@ Vagrant.configure("2") do |config|
       box.vm.provider :virtualbox do |vb|
         vb.customize ["modifyvm", :id, "--memory", boxconfig[:mem]]
       end
-#      if boxconfig[:vm_name] == "replica"
-#        box.vm.provision "ansible" do |ansible|
-#          ansible.playbook = "ansible/playbook.yml"
-#          ansible.inventory_path = "ansible/hosts"
-#          ansible.become = true
+      if boxconfig[:vm_name] == "replica"
+        box.vm.provision "ansible" do |ansible|
+          ansible.playbook = "ansible/playbook.yml"
+          ansible.inventory_path = "ansible/hosts"
+          ansible.become = true
 #          ansible.verbose = "vvv"
-#          ansible.host_key_checking = "false"
-#          ansible.limit = "all"
-#        end
-#      end
+          ansible.host_key_checking = "false"
+          ansible.limit = "all"
+        end
+      end
     end
   end
 end

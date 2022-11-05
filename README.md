@@ -215,7 +215,7 @@ Nov 04 11:30:35 master systemd[1]: Starting MySQL Server...
 Nov 04 11:30:39 master systemd[1]: Started MySQL Server.
 [root@master ~]#</pre>
 
-<p>Находим пароль для пользователя root:</p>
+<p>Находим временный пароль для пользователя root:</p>
 
 <pre>[root@master ~]# <b>cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'</b>
 A+0!Id>(VS#M
@@ -475,7 +475,7 @@ replicate-ignore-table=bet.v_same_event</b></pre>
 <pre>[root@replica ~]# <b>systemctl start mysql</b>
 [root@replica ~]#</pre>
 
-<p>Находим пароль для пользователя root:</p>
+<p>Находим временный пароль для пользователя root:</p>
 
 <pre>[root@replica ~]# <b>cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'</b>
 -tg6%oDu;-O(

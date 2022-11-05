@@ -1,4 +1,29 @@
 ---
 # tasks file for mysqlbackup2
 
-- name: 
+- name: Get temporary mysql root password
+  shell: cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'
+  register: temp_mysql_root_password
+
+- name: Update mysql root password
+  command: mysql -uroot -p'{{ temp_mysql_root_password.stdout }}' --connect-expired-password -e "ALTER USER USER() IDENTIFIED BY '{{ mysql_root_password }}';"
+
+- name: Copy mysql dump 'master.sql' from /tmp/fetched to replica server
+  copy:
+    src: "/tmp/fetched/master/vagrant/{{ item }}"
+    dest: /vagrant/
+  loop:
+  - "master.sql"
+
+- name: Start slave
+  command: mysql -e "RESET MASTER;"
+
+- name: Import mysql dump 'master.sql'
+  command: mysql -e "SOURCE /vagrant/master.sql;"
+
+- name: Connect mysql to master server
+  command: mysql -e 'CHANGE MASTER TO MASTER_HOST="{{ master_ip }}", MASTER_PORT={{ mysql_port }}, MASTER_USER="{{ mysql_user }}", MASTER_PASSWORD="{{ mysql_user_password }}", MASTER_AUTO_POSITION=1;'
+
+- name: Start slave
+  command: mysql -e "START SLAVE;"
+

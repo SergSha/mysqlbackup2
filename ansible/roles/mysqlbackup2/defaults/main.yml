@@ -1,8 +1,10 @@
 ---
 # defaults file for mysqlbackup2
 
-main_ip: 192.168.50.10
+master_ip: 192.168.50.10
 replica_ip: 192.168.50.11
 mysql_root_password: 'root@Otus1234'
 mysql_user: repl
 mysql_user_password: 'repl@Otus1234'
+mysql_port: 3306
+

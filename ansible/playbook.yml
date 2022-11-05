@@ -1,7 +1,7 @@
 ---
-- name: VPN | Install and Configure
+- name: MySQL | Install and configure replication
   hosts: all
   become: true
 
   roles:
-    - { role: vlan, when: ansible_system == 'Linux' }
+    - { role: mysqlbackup2, when: ansible_system == 'Linux' }
