@@ -1,5 +1,5 @@
 ---
-# tasks file for mysqlbackup2
+# tasks file for mysqlreplica
 
 - name: Install Percona repo
   command: yum install https://repo.percona.com/yum/percona-release-latest.noarch.rpm -y 

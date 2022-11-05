@@ -4,4 +4,4 @@
   become: true
 
   roles:
-    - { role: mysqlbackup2, when: ansible_system == 'Linux' }
+    - { role: mysqlreplica, when: ansible_system == 'Linux' }

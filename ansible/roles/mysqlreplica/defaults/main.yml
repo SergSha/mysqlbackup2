@@ -1,5 +1,5 @@
 ---
-# defaults file for mysqlbackup2
+# defaults file for mysqlreplica
 
 master_ip: 192.168.50.10
 replica_ip: 192.168.50.11
